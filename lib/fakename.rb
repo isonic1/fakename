@@ -8,98 +8,72 @@ class Fake
     agent.get("https://fakena.me/")
     agent.page.link_with(:text => "Generate Fake Name").click
     puts agent.page.title
-    @data = Hash[*agent.page.search("td").map { |x| x.children.text }]
+    @hash = Hash[*agent.page.search("td").map { |x| x.children.text }]
+    inst_variable_set(@hash)
   end
   
-  def name
-    @data['Name:']
+  def inst_variable_set hash
+    vars = hash.map {|k, v| k.downcase.tr(' ','_').tr(',','').gsub(':','') }
+    vals = hash.map {|k, v| v }
+    vars.zip(vals).each do |var, val|
+      self.class.__send__(:attr_accessor, "#{var}")
+      self.__send__("#{var}=",val)
+    end
   end
   
   def first_name
-    name.split[0]
+    @name.split.first
   end
   
   def last_name
-    name.split[1]
-  end
-  
-  def gender
-    @data['Gender:']
-  end
-  
-  def dob
-    @data['Date of Birth:']
+    @name.split.last
   end
   
   def dob_year
-    dob.split("-")[0]
+    @date_of_birth.split("-")[0]
   end
   
   def dob_month
-    dob.split("-")[1]
+    @date_of_birth.split("-")[1]
   end
   
   def dob_day
-    dob.split("-")[2]
-  end
-    
-  def ssn
-    @data['Social Security Number:']
-  end
-  
-  def street_address
-    @data['Street Address:']
+    @date_of_birth.split("-")[2]
   end
   
   def street_number
-    street_address.split[0]
+    @street_address.split[0]
   end
-  
-  def city_state_zip
-    @data['City, State, ZIP:']
-  end
-  
+
   def city
-    city_state_zip.tr(',','').split[0]
+    @city_state_zip.tr(',','').split[0]
   end
   
   def state
-    city_state_zip.tr(',','').split[1]
+    @city_state_zip.tr(',','').split[1]
   end
   
   def zip
-    city_state_zip.tr(',','').split[2]
-  end
-  
-  def phone_number
-    @data['Phone Number:']
+    @city_state_zip.tr(',','').split[2]
   end
   
   def phone_area_code
-    phone_number.tr('()','').split[0]
+    @phone_number.tr('()','').split[0]
   end
   
-  def first_three_phone_number
-    phone_number.split[1].split('-')[0]
+  def phone_prefix
+    @phone_number.split[1].split('-')[0]
   end
   
-  def last_four_phone_number
-    phone_number.split[1].split('-')[1]
-  end
-  
-  def username
-    @data['Username:']
-  end
-  
-  def password
-    @data['Password:']
-  end
-  
-  def email
-    @data['Temporary Email Address:']
+  def phone_line_number
+    @phone_number.split[1].split('-')[1]
   end
   
   def hashed_data
-    @data
+    @hash
+  end
+  
+  def reload
+    initialize
   end
 end
