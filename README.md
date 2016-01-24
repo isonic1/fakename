@@ -28,6 +28,7 @@ Or install it yourself as:
 	data.hashed_data <- returns all data in a hash
 	data.name <- full name
 	data.first_name <- only first name
+	data.reload <- fetch new data
 	data.methods <- see all availble methods
 
 ## Contributing
