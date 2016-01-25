@@ -13,11 +13,10 @@ class Fake
   end
   
   def inst_variable_set hash
-    vars = hash.map {|k, v| k.downcase.tr(' ','_').tr(',','').gsub(':','') }
-    vals = hash.map {|k, v| v }
-    vars.zip(vals).each do |var, val|
-      self.class.__send__(:attr_accessor, "#{var}")
-      self.__send__("#{var}=",val)
+    hash.each do |var, val|
+      var = var.downcase.tr(' ','_').tr(',','').gsub(':','')
+      self.class.__send__(:attr_accessor, var)
+      self.__send__("#{var}=", val)
     end
   end
   
